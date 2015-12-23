@@ -77,6 +77,9 @@ template:
 	mkdir src/ inc/
 	cp -f $(STM32_TEMPLATE)/*.c src/
 	cp -f $(STM32_TEMPLATE)/*.h inc/
+	@echo "(main.c, main.h are not used)"
+	rm src/main.c
+	rm inc/main.h
 
 # Build
 
