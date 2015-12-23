@@ -1,4 +1,4 @@
-PROJ_NAME = stm32_project
+PROJ_NAME = stm32_rust_project
 
 # Set toolchain
 TC = arm-none-eabi

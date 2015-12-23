@@ -1,1 +1,1 @@
-# STM32Template
+# STM32RustTemplate
