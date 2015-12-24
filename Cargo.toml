@@ -1,0 +1,10 @@
+[package]
+name = "STM32RustTemplate"
+version = "0.0.0"
+authors = ["SillyFreak <sillyfreak.ck@gmail.com>"]
+
+[lib]
+name = "main"
+path = "src/main.rs"
+crate-type = ["staticlib"]
+

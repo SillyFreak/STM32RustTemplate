@@ -1,6 +1,8 @@
 /STM32F30x_DSP_StdPeriph_Lib_V1.2.3/
 /stdperiph_lib.zip
 /flasher/
+/rust/
+/target/
 
 # Object files
 *.o
@@ -9,6 +11,7 @@
 *.elf
 *.bin
 *.map
+*.rlib
 
 # Precompiled Headers
 *.gch

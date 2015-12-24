@@ -9,6 +9,9 @@ AR      = $(TC)-ar
 OBJCOPY = $(TC)-objcopy
 OBJDUMP = $(TC)-objdump
 SIZE    = $(TC)-size
+NIGHTLY_RUST = multirust run nightly
+RUSTC   = $(NIGHTLY_RUST) rustc
+CARGO   = $(NIGHTLY_RUST) cargo
 
 # Set Device specific paths and names
 STM32_LIB_URL = http://www.st.com/st-web-ui/static/active/en/st_prod_software_internet/resource/technical/software/firmware/stm32f30x_dsp_stdperiph_lib.zip
@@ -27,10 +30,11 @@ LIB_C_SRCS = $(wildcard $(STM32_PERIPH_DRIVER)/src/*.c)
 LIB_C_SRCS+= $(wildcard $(STM32_CMSIS)/Source/Templates/*.c)
 LIB_S_SRCS = $(STM32_CMSIS_DEVICE)/Source/Templates/TrueSTUDIO/startup_stm32f30x.s
 C_SRCS = $(wildcard src/*.c)
+RS_SRCS = $(wildcard src/*.rs) $(wildcard src/*/*.rs)
 
 # Set Objects
 LIB_OBJS = $(LIB_C_SRCS:.c=.o) $(LIB_S_SRCS:.s=.o)
-OBJS     = $(C_SRCS:.c=.o)
+OBJS     = $(C_SRCS:.c=.o) target/debug/main.o
 
 # Set Include Paths
 INCLUDES = -I$(STM32_PERIPH_DRIVER)/inc/ \
@@ -57,7 +61,15 @@ LDFLAGS = $(MCU) $(FPU) -g -gdwarf-2\
           $(LIBS) \
           -o $(PROJ_NAME).elf
 
-.PHONY: all download unpack template info flash remote-flash clean
+RUSTFLAGS  = -C opt-level=2 -Z no-landing-pads \
+             --target thumbv7em-none-eabi
+CARGOFLAGS = -- $(RUSTFLAGS) \
+             -g --emit obj \
+             -L libcore-thumbv7m \
+             -L librustc_bitflags-thumbv7m \
+             -L $(shell multirust run nightly sh -c 'echo `dirname $$CARGO_HOME`/lib/rustlib/*/lib')
+
+.PHONY: all download-stm unpack-stm download-rust build-rust template info flash remote-flash clean
 
 # Default target
 
@@ -65,13 +77,24 @@ all: $(PROJ_NAME).bin info
 
 # Setup targets
 
-download:
+download-stm:
 	rm -f stdperiph_lib.zip
 	curl -o stdperiph_lib.zip $(STM32_LIB_URL)
 
-unpack:
+unpack-stm:
 	rm -rf $(STM32)
 	unzip stdperiph_lib.zip
+
+download-rust:
+	test -d rust || git clone git@github.com:rust-lang/rust.git
+	cd rust && git pull
+
+build-rust:
+	rm -rf libcore-thumbv7m librustc_bitflags-thumbv7m
+	cd rust && git checkout $(shell multirust run nightly rustc -v --version | grep commit-hash: | sed 's/commit-hash: //')
+	mkdir libcore-thumbv7m librustc_bitflags-thumbv7m
+	$(RUSTC) $(RUSTFLAGS) -g rust/src/libcore/lib.rs --out-dir libcore-thumbv7m
+	$(RUSTC) $(RUSTFLAGS) -g rust/src/librustc_bitflags/lib.rs --out-dir librustc_bitflags-thumbv7m -L libcore-thumbv7m/
 
 template:
 	mkdir src/ inc/
@@ -89,6 +112,10 @@ template:
 
 %.o: %.s
 	@$(CC) $(ASFLAGS) -c -o $@ $<
+	@echo $@
+
+target/debug/main.o: $(RS_SRCS)
+	@$(CARGO) rustc --lib $(CARGOFLAGS)
 	@echo $@
 
 $(PROJ_NAME).elf: $(LIB_OBJS) $(OBJS)
@@ -119,4 +146,5 @@ clean:
 	rm -f $(PROJ_NAME).elf
 	rm -f $(PROJ_NAME).bin
 	rm -f $(PROJ_NAME).map
+	$(CARGO) clean
 
