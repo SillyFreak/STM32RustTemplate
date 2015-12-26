@@ -1,8 +1,11 @@
 use hardware::registers::RegPtr;
+use super::*;
+
+//register structure
 
 #[repr(C, packed)]
 #[allow(non_snake_case)]
-pub struct Rcc {
+pub struct RCC {
     pub CR:       u32, //0x00
     pub CFGR:     u32, //0x04
     pub CIR:      u32, //0x08
@@ -18,9 +21,13 @@ pub struct Rcc {
     pub CFGR3:    u32, //0x30
 }
 
+//register addresses
+
 registers! {
-    const RCC: Rcc = 0x40021000,
+    const RCC: RCC = RCC_BASE,
 }
+
+//custom
 
 bitflags! {
     flags AHBENR: u32 {
