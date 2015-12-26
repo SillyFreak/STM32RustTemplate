@@ -1,5 +1,5 @@
 use hardware::registers::{Reg, RegPtr};
-use stm32f3::rcc;
+use super::rcc;
 
 bitflags! {
     flags Mode: u32 {

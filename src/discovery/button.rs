@@ -1,5 +1,5 @@
-use stm32f3::gpio::*;
-use stm32f3::rcc::*;
+use stm32f30x::gpio::*;
+use stm32f30x::rcc::*;
 
 pub trait Button {
     fn button_init(&mut self);

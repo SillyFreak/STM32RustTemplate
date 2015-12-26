@@ -3,7 +3,7 @@
 
 mod runtime;
 mod hardware;
-mod stm32f3;
+mod stm32f30x;
 mod discovery;
 
 use discovery::led::Led;
