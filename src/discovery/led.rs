@@ -1,7 +1,7 @@
 use stm32f3::gpio::*;
 use stm32f3::rcc::*;
 
-use registers::Reg;
+use hardware::registers::Reg;
 
 pub trait Led {
     fn led_init(&mut self);

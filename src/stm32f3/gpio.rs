@@ -1,4 +1,4 @@
-use registers::{Reg, RegPtr};
+use hardware::registers::{Reg, RegPtr};
 use stm32f3::rcc;
 
 bitflags! {

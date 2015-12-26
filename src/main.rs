@@ -2,8 +2,7 @@
 #![no_std]
 
 mod runtime;
-mod bitflags;
-mod registers;
+mod hardware;
 mod stm32f3;
 mod discovery;
 
