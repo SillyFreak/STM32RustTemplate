@@ -1,5 +1,41 @@
-use hardware::registers::{Reg, RegPtr};
-use super::rcc;
+use hardware::registers::RegPtr;
+use super::*;
+
+//register structure
+
+#[repr(C, packed)]
+#[allow(non_snake_case)]
+pub struct GPIO {
+    pub MODER:     u32,      //0x00
+    pub OTYPER:    u16,      //0x04
+    pub RESERVED0: u16,      //0x06
+    pub OSPEEDR:   u32,      //0x08
+    pub PUPDR:     u32,      //0x0C
+    pub IDR:       u16,      //0x10
+    pub RESERVED1: u16,      //0x12
+    pub ODR:       u16,      //0x14
+    pub RESERVED2: u16,      //0x16
+    pub BSRR:      u32,      //0x18
+    pub LCKR:      u32,      //0x1C
+    pub AFR:       [u32; 2], //0x20-0x24
+    pub BRR:       u16,      //0x28
+    pub RESERVED3: u16,      //0x2A
+}
+
+//register addresses
+
+registers! {
+    const GPIOA: GPIO = GPIOA_BASE,
+    const GPIOB: GPIO = GPIOB_BASE,
+    const GPIOC: GPIO = GPIOC_BASE,
+    const GPIOD: GPIO = GPIOD_BASE,
+    const GPIOE: GPIO = GPIOE_BASE,
+    const GPIOF: GPIO = GPIOF_BASE,
+}
+
+//custom
+
+use hardware::registers::Reg;
 
 bitflags! {
     flags Mode: u32 {
@@ -33,26 +69,7 @@ bitflags! {
     }
 }
 
-#[repr(C, packed)]
-#[allow(non_snake_case)]
-pub struct Port {
-    pub MODER:     u32,      //0x00
-    pub OTYPER:    u16,      //0x04
-    pub RESERVED0: u16,      //0x06
-    pub OSPEEDR:   u32,      //0x08
-    pub PUPDR:     u32,      //0x0C
-    pub IDR:       u16,      //0x10
-    pub RESERVED1: u16,      //0x12
-    pub ODR:       u16,      //0x14
-    pub RESERVED2: u16,      //0x16
-    pub BSRR:      u32,      //0x18
-    pub LCKR:      u32,      //0x1C
-    pub AFR:       [u32; 2], //0x20-0x24
-    pub BRR:       u16,      //0x28
-    pub RESERVED3: u16,      //0x2A
-}
-
-impl Port {
+impl GPIO {
     pub fn init(&mut self, pins: Pin,
                 mode: Mode, ospeed: OSpeed, otype: OType, pupd: PuPd) {
         let pins = pins.bits();
@@ -65,15 +82,6 @@ impl Port {
             }
         }
     }
-}
-
-registers! {
-    const PORT_A: Port = 0x48000000,
-    const PORT_B: Port = 0x48000400,
-    const PORT_C: Port = 0x48000800,
-    const PORT_D: Port = 0x48000C00,
-    const PORT_E: Port = 0x48001000,
-    const PORT_F: Port = 0x48001400,
 }
 
 bitflags! {
@@ -98,15 +106,15 @@ bitflags! {
 }
 
 pub struct Gpio {
-    pub port: RegPtr<Port>,
+    pub gpio: RegPtr<GPIO>,
     pub pin:  Pin,
     pub clk:  rcc::AHBENR,
 }
 
 impl Gpio {
-    pub const fn new(port: RegPtr<Port>, pin: Pin, clk: rcc::AHBENR) -> Self {
+    pub const fn new(gpio: RegPtr<GPIO>, pin: Pin, clk: rcc::AHBENR) -> Self {
         Gpio {
-            port: port,
+            gpio: gpio,
             pin: pin,
             clk: clk,
         }
@@ -118,14 +126,14 @@ impl Gpio {
         //rcc::RCC.AHBENR |= self.clk.bits();
         (*rcc::RCC).AHBENR |= self.clk.bits();
         
-        self.port.init(self.pin, mode, ospeed, otype, pupd);
+        self.gpio.init(self.pin, mode, ospeed, otype, pupd);
     }
 
     pub fn toggle(&mut self) {
-        let port = &mut *self.port;
+        let gpio = &mut *self.gpio;
         let pin = self.pin;
 
-        port.ODR ^= pin.bits();
+        gpio.ODR ^= pin.bits();
     }
 }
 

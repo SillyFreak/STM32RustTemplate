@@ -12,9 +12,9 @@ impl Button for Gpio {
     }
 
     fn button_get(&self) -> bool {
-        self.port.IDR & self.pin.bits() != 0
+        self.gpio.IDR & self.pin.bits() != 0
     }
 }
 
-pub const BUTTON: Gpio = Gpio::new(PORT_A, PIN0, GPIOAEN);
+pub const BUTTON: Gpio = Gpio::new(GPIOA, PIN0, GPIOAEN);
 
