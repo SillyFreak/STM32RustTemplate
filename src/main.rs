@@ -1,18 +1,19 @@
-#![feature(lang_items, const_fn)]
+#![feature(lang_items, core_intrinsics, const_fn)]
 #![no_std]
 
 mod runtime;
 mod hardware;
 mod stm32f30x;
+mod systick;
 mod discovery;
 
 use discovery::led::Led;
 
 #[no_mangle]
 pub fn main() {
-    discovery::systick::config(72);
+    systick::config(72);
 
-	discovery::core_clock_update();
+	systick::core_clock_update();
 
     for i in 0..8 {
         discovery::led::LED[i].led_init();
@@ -22,9 +23,17 @@ pub fn main() {
     let mut led = 0;
     loop {
         discovery::led::LED[led].led_toggle();
-		discovery::delay_ms(125);
+		systick::msleep(125);
 		led = (led + off) % 8;
     }
+}
+
+//interrupts
+
+#[no_mangle]
+#[allow(non_snake_case)]
+pub fn SysTick_Handler() {
+    systick::systick_handler();
 }
 
 //TODO stubs that the linker otherwise misses; seems to have to do with assert

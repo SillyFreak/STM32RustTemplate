@@ -1,4 +1,4 @@
-#include "common.h"
+#include "stm32f30x.h"
 
 // SysTick_Config is a static inline function,
 // and thus not present in any .o file.
