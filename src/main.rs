@@ -30,9 +30,16 @@ pub fn main() {
 
 //interrupts
 
-#[no_mangle]
-#[allow(non_snake_case)]
-pub fn SysTick_Handler() {
+#[no_mangle] #[allow(non_snake_case)] pub fn NMI_Handler() {}
+#[no_mangle] #[allow(non_snake_case)] pub fn HardFault_Handler() { loop {} }
+#[no_mangle] #[allow(non_snake_case)] pub fn MemManage_Handler() { loop {} }
+#[no_mangle] #[allow(non_snake_case)] pub fn BusFault_Handler() { loop {} }
+#[no_mangle] #[allow(non_snake_case)] pub fn UsageFault_Handler() { loop {} }
+#[no_mangle] #[allow(non_snake_case)] pub fn SVC_Handler() {}
+#[no_mangle] #[allow(non_snake_case)] pub fn DebugMon_Handler() {}
+#[no_mangle] #[allow(non_snake_case)] pub fn PendSV_Handler() {}
+
+#[no_mangle] #[allow(non_snake_case)] pub fn SysTick_Handler() {
     systick::systick_handler();
 }
 
