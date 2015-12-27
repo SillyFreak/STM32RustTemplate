@@ -7,6 +7,8 @@ mod stm32f30x;
 mod systick;
 mod discovery;
 
+pub use systick::SysTick_Handler;
+
 use discovery::led::Led;
 
 #[no_mangle]
@@ -28,7 +30,7 @@ pub fn main() {
     }
 }
 
-//interrupts
+//interrupt stubs
 
 #[no_mangle] #[allow(non_snake_case)] pub fn NMI_Handler() {}
 #[no_mangle] #[allow(non_snake_case)] pub fn HardFault_Handler() { loop {} }
@@ -38,10 +40,6 @@ pub fn main() {
 #[no_mangle] #[allow(non_snake_case)] pub fn SVC_Handler() {}
 #[no_mangle] #[allow(non_snake_case)] pub fn DebugMon_Handler() {}
 #[no_mangle] #[allow(non_snake_case)] pub fn PendSV_Handler() {}
-
-#[no_mangle] #[allow(non_snake_case)] pub fn SysTick_Handler() {
-    systick::systick_handler();
-}
 
 //TODO stubs that the linker otherwise misses; seems to have to do with assert
 

@@ -23,7 +23,9 @@ pub fn systick() -> u32 {
     return unsafe { volatile_load(&tick) };
 }
 
-pub fn systick_handler() {
+#[no_mangle]
+#[allow(non_snake_case)]
+pub fn SysTick_Handler() {
     unsafe {
         tick += 1;
     }
