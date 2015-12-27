@@ -7,6 +7,7 @@ mod stm32f30x;
 mod systick;
 mod discovery;
 
+pub use runtime::{_exit, _kill, _getpid};
 pub use systick::SysTick_Handler;
 
 use discovery::led::Led;
@@ -40,21 +41,4 @@ pub fn main() {
 #[no_mangle] #[allow(non_snake_case)] pub fn SVC_Handler() {}
 #[no_mangle] #[allow(non_snake_case)] pub fn DebugMon_Handler() {}
 #[no_mangle] #[allow(non_snake_case)] pub fn PendSV_Handler() {}
-
-//TODO stubs that the linker otherwise misses; seems to have to do with assert
-
-#[no_mangle]
-pub fn _exit() -> ! {
-    loop {}
-}
-
-#[no_mangle]
-pub fn _kill() -> ! {
-    loop {}
-}
-
-#[no_mangle]
-pub fn _getpid() -> ! {
-    loop {}
-}
 
