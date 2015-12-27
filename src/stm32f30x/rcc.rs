@@ -6,25 +6,25 @@ use super::*;
 #[repr(C, packed)]
 #[allow(non_snake_case)]
 pub struct RCC {
-    pub CR:       u32, //0x00
-    pub CFGR:     u32, //0x04
-    pub CIR:      u32, //0x08
-    pub APB2RSTR: u32, //0x0C
-    pub APB1RSTR: u32, //0x10
-    pub AHBENR:   u32, //0x14
-    pub APB2ENR:  u32, //0x18
-    pub APB1ENR:  u32, //0x1C
-    pub BDCR:     u32, //0x20
-    pub CSR:      u32, //0x24
-    pub AHBRSTR:  u32, //0x28
-    pub CFGR2:    u32, //0x2C
-    pub CFGR3:    u32, //0x30
+    pub CR:                 u32,
+    pub CFGR:               u32,
+    pub CIR:                u32,
+    pub APB2RSTR:           u32,
+    pub APB1RSTR:           u32,
+    pub AHBENR:             u32,
+    pub APB2ENR:            u32,
+    pub APB1ENR:            u32,
+    pub BDCR:               u32,
+    pub CSR:                u32,
+    pub AHBRSTR:            u32,
+    pub CFGR2:              u32,
+    pub CFGR3:              u32,
 }
 
 //register addresses
 
 registers! {
-    const RCC: RCC = RCC_BASE,
+    const RCC:          RCC             = RCC_BASE,
 }
 
 //custom

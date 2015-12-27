@@ -6,31 +6,33 @@ use super::*;
 #[repr(C, packed)]
 #[allow(non_snake_case)]
 pub struct GPIO {
-    pub MODER:     u32,      //0x00
-    pub OTYPER:    u16,      //0x04
-    pub RESERVED0: u16,      //0x06
-    pub OSPEEDR:   u32,      //0x08
-    pub PUPDR:     u32,      //0x0C
-    pub IDR:       u16,      //0x10
-    pub RESERVED1: u16,      //0x12
-    pub ODR:       u16,      //0x14
-    pub RESERVED2: u16,      //0x16
-    pub BSRR:      u32,      //0x18
-    pub LCKR:      u32,      //0x1C
-    pub AFR:       [u32; 2], //0x20-0x24
-    pub BRR:       u16,      //0x28
-    pub RESERVED3: u16,      //0x2A
+    pub MODER:              u32,
+    pub OTYPER:             u16,
+    pub RESERVED0:          u16,
+    pub OSPEEDR:            u32,
+    pub PUPDR:              u32,
+    pub IDR:                u16,
+    pub RESERVED1:          u16,
+    pub ODR:                u16,
+    pub RESERVED2:          u16,
+    pub BSRR:               u32,
+    pub LCKR:               u32,
+    pub AFR:                [u32; 2],
+    pub BRR:                u16,
+    pub RESERVED3:          u16,
 }
 
 //register addresses
 
 registers! {
-    const GPIOA: GPIO = GPIOA_BASE,
-    const GPIOB: GPIO = GPIOB_BASE,
-    const GPIOC: GPIO = GPIOC_BASE,
-    const GPIOD: GPIO = GPIOD_BASE,
-    const GPIOE: GPIO = GPIOE_BASE,
-    const GPIOF: GPIO = GPIOF_BASE,
+    const GPIOA:        GPIO            = GPIOA_BASE,
+    const GPIOB:        GPIO            = GPIOB_BASE,
+    const GPIOC:        GPIO            = GPIOC_BASE,
+    const GPIOD:        GPIO            = GPIOD_BASE,
+    const GPIOE:        GPIO            = GPIOE_BASE,
+    const GPIOF:        GPIO            = GPIOF_BASE,
+    const GPIOG:        GPIO            = GPIOG_BASE,
+    const GPIOH:        GPIO            = GPIOH_BASE,
 }
 
 //custom
