@@ -72,15 +72,37 @@ bitflags! {
 }
 
 impl GPIO {
+    pub fn set_mode(&mut self, pin: u8, mode: Mode) {
+        self.MODER.shift_mask_set(mode.bits(), Mode::all().bits(), pin * 2);
+    }
+
+    pub fn set_otype(&mut self, pin: u8, otype: OType) {
+        self.OTYPER.shift_mask_set(otype.bits(), OType::all().bits(), pin);
+    }
+
+    pub fn set_ospeed(&mut self, pin: u8, ospeed: OSpeed) {
+        self.OSPEEDR.shift_mask_set(ospeed.bits(), OSpeed::all().bits(), pin * 2);
+    }
+
+    pub fn set_pupd(&mut self, pin: u8, pupd: PuPd) {
+        self.PUPDR.shift_mask_set(pupd.bits(), PuPd::all().bits(), pin * 2);
+    }
+
+    pub fn set_af(&mut self, pin: u8, af: u8) {
+        let index = pin as usize >> 3;
+        let off = pin & 0x07;
+        self.AFR[index].shift_mask_set(af as u32, 0x0F, off * 4);
+    }
+
     pub fn init(&mut self, pins: Pin,
                 mode: Mode, ospeed: OSpeed, otype: OType, pupd: PuPd) {
         let pins = pins.bits();
         for pin in 0..16 {
             if pins | (1 << pin) != 0 {
-                self.OSPEEDR.shift_mask_set(ospeed.bits(), OSpeed::all().bits(), pin * 2);
-                self.OTYPER.shift_mask_set(otype.bits(), OType::all().bits(), pin);
-                self.MODER.shift_mask_set(mode.bits(), Mode::all().bits(), pin * 2);
-                self.PUPDR.shift_mask_set(pupd.bits(), PuPd::all().bits(), pin * 2);
+                self.set_ospeed(pin, ospeed);
+                self.set_otype(pin, otype);
+                self.set_mode(pin, mode);
+                self.set_pupd(pin, pupd);
             }
         }
     }
