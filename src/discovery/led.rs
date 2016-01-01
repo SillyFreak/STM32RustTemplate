@@ -11,7 +11,7 @@ pub trait Led {
 
 impl Led for Gpio {
     fn led_init(&mut self) {
-        self.init(MODE_OUT, OSPEED_50MHZ, OTYPE_PP, PUPD_UP);
+        self.init(MODER::OUT, OSPEEDR::_50MHZ, OTYPER::PP, PUPDR::UP);
     }
 
     fn led_toggle(&mut self) {

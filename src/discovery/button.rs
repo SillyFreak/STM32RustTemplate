@@ -8,7 +8,7 @@ pub trait Button {
 
 impl Button for Gpio {
     fn button_init(&mut self) {
-        self.init(MODE_IN, OSPEED_50MHZ, OTYPE_PP, PUPD_NOPULL);
+        self.init(MODER::IN, OSPEEDR::_50MHZ, OTYPER::PP, PUPDR::NOPULL);
     }
 
     fn button_get(&self) -> bool {
