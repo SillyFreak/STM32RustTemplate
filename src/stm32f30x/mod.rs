@@ -132,3 +132,4 @@ pub const FMC_BANK4_R_BASE:     usize = FMC_R_BASE + 0x00A0;
 
 pub const DBGMCU_BASE:          usize = 0xE0042000;                     //Debug MCU registers base address
 
+pub mod irq;
