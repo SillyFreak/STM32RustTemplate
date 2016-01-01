@@ -3,6 +3,7 @@
 
 mod runtime;
 mod hardware;
+mod serial;
 mod stm32f30x;
 mod systick;
 mod discovery;
@@ -10,24 +11,30 @@ mod discovery;
 pub use runtime::{_exit, _kill, _getpid};
 pub use systick::SysTick_Handler;
 
-use discovery::led::Led;
+use core::intrinsics::{volatile_load, volatile_store};
+use stm32f30x::{gpio, usart};
 
 #[no_mangle]
 pub fn main() {
     systick::config(72);
 
-	systick::core_clock_update();
+    systick::core_clock_update();
 
-    for i in 0..8 {
-        discovery::led::LED[i].led_init();
-    }
+    serial::init(&mut usart::USART1, &mut gpio::GPIOA, 10, &mut gpio::GPIOA, 9);
     
-    let off = 1;
-    let mut led = 0;
-    loop {
-        discovery::led::LED[led].led_toggle();
-		systick::msleep(125);
-		led = (led + off) % 8;
+    loop {}
+}
+
+#[no_mangle]
+#[allow(non_snake_case)]
+pub fn USART1_IRQHandler() {
+    let usart = &mut *usart::USART1;
+    if (usart.ISR & usart::ISR::RXNE) != 0 {
+        unsafe {
+            let data = volatile_load(&usart.RDR);
+            while (volatile_load(&usart.ISR) & usart::ISR::TXE) == 0 {}
+            volatile_store(&mut usart.TDR, data);
+        }
     }
 }
 
