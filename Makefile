@@ -86,7 +86,7 @@ unpack-stm:
 
 download-rust:
 	test -d rust || git clone git@github.com:rust-lang/rust.git
-	cd rust && git pull
+	cd rust && git pull origin master
 
 build-rust:
 	rm -rf thumbv7m
