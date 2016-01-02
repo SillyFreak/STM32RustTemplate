@@ -16,5 +16,5 @@ impl Button for Gpio {
     }
 }
 
-pub const BUTTON: Gpio = Gpio::new(GPIOA, PIN0, GPIOAEN);
+pub const BUTTON: Gpio = Gpio::new(GPIOA, PIN0, AHBENR::GPIOAEN);
 

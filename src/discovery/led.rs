@@ -27,14 +27,14 @@ impl Led for Gpio {
     }
 }
 
-pub const LED6:  Gpio = Gpio::new(GPIOE, PIN15, GPIOEEN);
-pub const LED8:  Gpio = Gpio::new(GPIOE, PIN14, GPIOEEN);
-pub const LED10: Gpio = Gpio::new(GPIOE, PIN13, GPIOEEN);
-pub const LED9:  Gpio = Gpio::new(GPIOE, PIN12, GPIOEEN);
-pub const LED7:  Gpio = Gpio::new(GPIOE, PIN11, GPIOEEN);
-pub const LED5:  Gpio = Gpio::new(GPIOE, PIN10, GPIOEEN);
-pub const LED3:  Gpio = Gpio::new(GPIOE, PIN9,  GPIOEEN);
-pub const LED4:  Gpio = Gpio::new(GPIOE, PIN8,  GPIOEEN);
+pub const LED6:  Gpio = Gpio::new(GPIOE, PIN15, AHBENR::GPIOEEN);
+pub const LED8:  Gpio = Gpio::new(GPIOE, PIN14, AHBENR::GPIOEEN);
+pub const LED10: Gpio = Gpio::new(GPIOE, PIN13, AHBENR::GPIOEEN);
+pub const LED9:  Gpio = Gpio::new(GPIOE, PIN12, AHBENR::GPIOEEN);
+pub const LED7:  Gpio = Gpio::new(GPIOE, PIN11, AHBENR::GPIOEEN);
+pub const LED5:  Gpio = Gpio::new(GPIOE, PIN10, AHBENR::GPIOEEN);
+pub const LED3:  Gpio = Gpio::new(GPIOE, PIN9,  AHBENR::GPIOEEN);
+pub const LED4:  Gpio = Gpio::new(GPIOE, PIN8,  AHBENR::GPIOEEN);
 
 pub const LED: [Gpio; 8] = [
     LED3, LED4, LED5, LED6,

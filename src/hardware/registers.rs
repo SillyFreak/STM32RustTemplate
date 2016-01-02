@@ -59,3 +59,18 @@ macro_rules! registers {
     };
 }
 
+#[macro_export]
+macro_rules! constants {
+    (
+        $($Mod:ident: $T:ty {
+            $($(#[$Const_attr:meta])* const $Const:ident = $value:expr,)+
+        })+
+    ) => {
+        $(#[allow(non_snake_case)]
+        pub mod $Mod {
+            pub type Type = $T;
+            $($(#[$Const_attr])* pub const $Const: Type = $value;)+
+        })+
+    };
+}
+
