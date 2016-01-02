@@ -65,8 +65,7 @@ RUSTFLAGS  = -C opt-level=2 -Z no-landing-pads \
              --target thumbv7em-none-eabi
 CARGOFLAGS = -- $(RUSTFLAGS) \
              -g --emit obj \
-             -L libcore-thumbv7m \
-             -L librustc_bitflags-thumbv7m \
+             -L thumbv7m \
              -L $(shell multirust run nightly sh -c 'echo `dirname $$CARGO_HOME`/lib/rustlib/*/lib')
 
 .PHONY: all download-stm unpack-stm download-rust build-rust template info flash remote-flash clean
@@ -90,11 +89,11 @@ download-rust:
 	cd rust && git pull
 
 build-rust:
-	rm -rf libcore-thumbv7m librustc_bitflags-thumbv7m
+	rm -rf thumbv7m
 	cd rust && git checkout $(shell multirust run nightly rustc -v --version | grep commit-hash: | sed 's/commit-hash: //')
-	mkdir libcore-thumbv7m librustc_bitflags-thumbv7m
-	$(RUSTC) $(RUSTFLAGS) -g rust/src/libcore/lib.rs --out-dir libcore-thumbv7m
-	$(RUSTC) $(RUSTFLAGS) -g rust/src/librustc_bitflags/lib.rs --out-dir librustc_bitflags-thumbv7m -L libcore-thumbv7m/
+	mkdir thumbv7m
+	$(RUSTC) $(RUSTFLAGS) -g rust/src/libcore/lib.rs --out-dir thumbv7m
+	$(RUSTC) $(RUSTFLAGS) -g rust/src/librustc_bitflags/lib.rs --out-dir thumbv7m -L thumbv7m/
 
 template:
 	mkdir src/ inc/
