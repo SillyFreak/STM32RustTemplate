@@ -109,7 +109,7 @@ impl GPIO {
     }
 
     pub fn set_af(&mut self, pin: u8, af: u8) {
-        let index = pin as usize >> 3;
+        let index = (pin as usize >> 3) & 0x01;
         let off = pin & 0x07;
         self.AFR[index].shift_mask_set(af as u32, 0x0F, off * 4);
     }
