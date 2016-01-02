@@ -25,15 +25,21 @@ pub fn main() {
     loop {}
 }
 
+static mut data: u8 = 0;
+
 #[no_mangle]
 #[allow(non_snake_case)]
 pub fn USART1_IRQHandler() {
     let usart = &mut *usart::USART1;
     if (usart.ISR & usart::ISR::RXNE) != 0 {
         unsafe {
-            let data = volatile_load(&usart.RDR);
-            while (volatile_load(&usart.ISR) & usart::ISR::TXE) == 0 {}
-            volatile_store(&mut usart.TDR, data);
+            data = volatile_load(&usart.RDR) as u8;
+            usart.CR1 |= usart::CR1::TCIE;
+        }
+    } else if (usart.ISR & usart::ISR::TXE) != 0 {
+        unsafe {
+            volatile_store(&mut usart.TDR, data as u16);
+            usart.CR1 &= !usart::CR1::TCIE;
         }
     }
 }
