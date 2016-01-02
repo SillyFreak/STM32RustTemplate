@@ -12,8 +12,7 @@ mod systick;
 pub use runtime::{_exit, _kill, _getpid};
 pub use systick::SysTick_Handler;
 
-use core::intrinsics::{volatile_load, volatile_store};
-use ringbuffer::Ringbuffer;
+use serial::Serial;
 use stm32f30x::{gpio, usart};
 
 #[no_mangle]
@@ -22,33 +21,27 @@ pub fn main() {
 
     systick::core_clock_update();
 
-    serial::init(&mut usart::USART1, &mut gpio::GPIOA, 10, &mut gpio::GPIOA, 9);
+    unsafe {
+        serial.init();
+    }
 
-    loop {}
+    loop {
+        unsafe {
+            while serial.rx.filled_slots() > 0 && serial.tx.free_slots() > 0 {
+                serial.tx.push(serial.rx.pop())
+            }
+            serial.check();
+        }
+    }
 }
 
-static mut ringbuf: Ringbuffer<u8> = Ringbuffer::new([0; ringbuffer::SIZE]);
+static mut serial: Serial = Serial::new(usart::USART1, gpio::GPIOA, 10, gpio::GPIOA, 9);
 
 #[no_mangle]
 #[allow(non_snake_case)]
 pub fn USART1_IRQHandler() {
-    let usart = &mut *usart::USART1;
-    if (usart.ISR & usart::ISR::RXNE) != 0 {
-        unsafe {
-            let data = volatile_load(&usart.RDR) as u8;
-            if ringbuf.free_slots() > 0 {
-                ringbuf.push(data);
-                usart.CR1 |= usart::CR1::TCIE;
-            }
-        }
-    } else if (usart.ISR & usart::ISR::TXE) != 0 {
-        unsafe {
-            let data = ringbuf.pop();
-            volatile_store(&mut usart.TDR, data as u16);
-            if ringbuf.filled_slots() == 0 {
-                usart.CR1 &= !usart::CR1::TCIE;
-            }
-        }
+    unsafe {
+        serial.handler();
     }
 }
 
